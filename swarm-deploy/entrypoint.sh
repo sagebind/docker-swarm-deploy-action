@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 if [ -z "$DEPLOY_PRIVATE_KEY" ]; then
     echo "Private SSH key is required!"
@@ -16,4 +17,4 @@ eval $(ssh-agent)
 printf "%s" "$DEPLOY_PRIVATE_KEY" > $HOME/.ssh/deploy
 ssh-add $HOME/.ssh/deploy
 
-exec docker stack deploy "$@"
+exec docker stack deploy "$*"
