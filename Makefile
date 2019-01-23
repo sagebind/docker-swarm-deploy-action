@@ -1,2 +1,2 @@
 build:
-	docker build swarm-deploy
+	docker-compose build

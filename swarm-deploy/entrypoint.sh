@@ -1,20 +1,29 @@
 #!/bin/sh
 set -eu
 
-if [ -z "$DEPLOY_PRIVATE_KEY" ]; then
-    echo "Private SSH key is required!"
-    exit 1
-fi
+printenv | grep DOCKER_HOST
 
 if [ -z "$DOCKER_HOST" ]; then
     echo "DOCKER_HOST is required!"
     exit 1
 fi
 
-eval $(ssh-agent)
+# If a private SSH key is provided for an SSH-based connection, register it with the SSH agent.
+if [ -n "$DOCKER_SSH_KEY" ]; then
+    echo "Registering SSH private key..."
 
-# Add given SSH key secret to the SSH agent
-printf "%s" "$DEPLOY_PRIVATE_KEY" > $HOME/.ssh/deploy
-ssh-add $HOME/.ssh/deploy
+    mkdir -p "$HOME/.ssh"
 
-exec docker stack deploy "$*"
+    printf 'Host *\n\tStrictHostKeyChecking no\n' >> "$HOME/.ssh/config"
+    chmod 400 "$HOME/.ssh/config"
+
+    printf '%s' "$DOCKER_SSH_KEY" > "$HOME/.ssh/docker"
+    chmod 600 "$HOME/.ssh/docker"
+
+    eval $(ssh-agent)
+    ssh-add "$HOME/.ssh/docker"
+fi
+
+echo "Deploying to $DOCKER_HOST..."
+
+docker stack deploy "$@"
