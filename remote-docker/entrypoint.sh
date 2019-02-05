@@ -1,8 +1,8 @@
 #!/bin/sh
 set -eu
 
-if [ -z "$DOCKER_HOST" ]; then
-    echo "DOCKER_HOST is required!"
+if [ -z "$DOCKER_REMOTE_HOST" ]; then
+    echo "DOCKER_REMOTE_HOST is required!"
     exit 1
 fi
 
@@ -20,8 +20,9 @@ if [ -n "${DOCKER_SSH_KEY:-}" ]; then
 
     eval $(ssh-agent)
     ssh-add "$HOME/.ssh/docker"
+    sleep 10
 fi
 
-echo "Connecting to $DOCKER_HOST..."
+echo "Connecting to $DOCKER_REMOTE_HOST..."
 
-docker --debug --log-level debug "$@"
+docker --log-level debug --host "$DOCKER_REMOTE_HOST" "$@" 2>&1
