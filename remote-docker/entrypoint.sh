@@ -1,15 +1,13 @@
 #!/bin/sh
 set -eu
 
-printenv | grep DOCKER_HOST
-
 if [ -z "$DOCKER_HOST" ]; then
     echo "DOCKER_HOST is required!"
     exit 1
 fi
 
 # If a private SSH key is provided for an SSH-based connection, register it with the SSH agent.
-if [ -n "$DOCKER_SSH_KEY" ]; then
+if [ -n "${DOCKER_SSH_KEY:-}" ]; then
     echo "Registering SSH private key..."
 
     mkdir -p "$HOME/.ssh"
@@ -24,6 +22,6 @@ if [ -n "$DOCKER_SSH_KEY" ]; then
     ssh-add "$HOME/.ssh/docker"
 fi
 
-echo "Deploying to $DOCKER_HOST..."
+echo "Connecting to $DOCKER_HOST..."
 
-docker --debug stack deploy "$@"
+docker --debug --log-level debug "$@"
