@@ -26,4 +26,4 @@ fi
 
 echo "Deploying to $DOCKER_HOST..."
 
-docker stack deploy "$@"
+docker --debug stack deploy "$@"
