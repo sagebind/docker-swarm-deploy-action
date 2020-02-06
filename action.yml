@@ -1,6 +1,16 @@
 name: docker-swarm-deploy
 author: Stephen M. Coakley <me@stephencoakley.com>
 description: A GitHub Action that enables you to publish your app as a Docker stack to a remote Docker swarm.
+inputs:
+  remote_host:
+    description: Docker host to connect to
+    required: true
+  ssh_public_key:
+    description: SSH public key of the server
+    required: false
+  ssh_private_key:
+    description: SSH private key to use to connect
+    required: false
 runs:
   using: docker
   image: Dockerfile
