@@ -6,16 +6,15 @@ A [GitHub Action](https://github.com/features/actions) that enables you to publi
 
 Below is a brief example on how the action can be used:
 
-```
-action "Deploy to swarm" {
-  uses = "sagebind/docker-swarm-deploy-action@master"
-  needs = ["Push image"]
-  env = {
-    DOCKER_REMOTE_HOST = "ssh://user@myswarm.com"
-  }
-  secrets = ["DOCKER_SSH_PRIVATE_KEY", "DOCKER_SSH_PUBLIC_KEY"]
-  args = "stack deploy --compose-file stack.yaml coolapp"
-}
+```yaml
+- name: Deploy to swarm
+  uses: sagebind/docker-swarm-deploy-action@1.0.0
+  env:
+    DOCKER_REMOTE_HOST: ssh://user@myswarm.com
+    DOCKER_SSH_PRIVATE_KEY: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
+    DOCKER_SSH_PUBLIC_KEY: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
+  with:
+    args: stack deploy --compose-file stack.yaml coolapp
 ```
 
 The `args` are passed in as args to the `docker` command after connecting to the remote swarm. To specify how to connect to your swarm, you must set the `DOCKER_REMOTE_HOST` environment variable, which takes the same syntax as the [`--host` command line flag](https://docs.docker.com/engine/reference/commandline/cli/).
