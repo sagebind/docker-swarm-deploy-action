@@ -1,0 +1,9 @@
+name: docker-swarm-deploy
+author: Stephen M. Coakley <me@stephencoakley.com>
+description: A GitHub Action that enables you to publish your app as a Docker stack to a remote Docker swarm.
+runs:
+  using: docker
+  image: Dockerfile
+branding:
+  icon: droplet
+  color: blue
